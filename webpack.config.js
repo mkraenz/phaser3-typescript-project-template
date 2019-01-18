@@ -1,11 +1,15 @@
-var path = require("path");
-var pathToPhaser = path.join(__dirname, "/node_modules/phaser/");
-var phaser = path.join(pathToPhaser, "dist/phaser.js");
+const path = require("path");
+const CleanWebpackPlugin = require("clean-webpack-plugin");
+
+const pathToPhaser = path.join(__dirname, "/node_modules/phaser/");
+const build_dir = "build";
 
 module.exports = {
-    entry: "./src/index.ts",
+    entry: {
+        index: "./src/index.ts"
+    },
     output: {
-        path: path.resolve(__dirname, "build"),
+        path: path.resolve(__dirname, build_dir),
         filename: "bundle.js"
     },
     module: {
@@ -14,9 +18,10 @@ module.exports = {
             { test: /phaser\.js$/, loader: "expose-loader?Phaser" }
         ]
     },
+    plugins: [new CleanWebpackPlugin(build_dir)],
     devServer: {
         contentBase: path.resolve(__dirname, "./"),
-        publicPath: "/build/",
+        publicPath: `/${build_dir}/`,
         host: "127.0.0.1",
         port: 8080,
         open: true
@@ -24,7 +29,7 @@ module.exports = {
     resolve: {
         extensions: [".ts", ".js"],
         alias: {
-            phaser: phaser
+            phaser: path.join(pathToPhaser, "dist/phaser.js")
         }
     }
 };
